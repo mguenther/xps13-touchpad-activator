@@ -1,0 +1,122 @@
+#!/bin/bash
+
+####################################################################################################
+##
+## touchpad-activator
+##
+## Utility script which uses xinput to extract information on the internal touchpad and allows
+## to change its enabled status. Please note that this script will not work properly if the
+## touchpad device of the XPS (2015-build) uses PS2 instead of the I2C bus. This is indeed
+## the case if 'xinput --list' shows an entry like this 'DLL0665:01 06CB:76AD UNKNOWN' and
+## an entry containing the text "PS2 touchpad". In this case, you have to blacklist the PS2 mode
+## by adding the line 'blacklist psmouse' to /etc/modprobe.d/blacklist.conf and executing
+## "sudo update-initramfs -u".
+##
+## This script logs its activity to $LOG_FILE.
+##
+####################################################################################################
+
+LOG_DIRECTORY="/home/$USER/.touchpad-activator"
+LOG_FILE="$LOG_DIRECTORY/touchpad-activator.log"
+
+TOUCHPAD_DEVICE_PATTERN="DLL0665"
+TOUCHPAD_DEVICE_ID=`xinput | grep $TOUCHPAD_DEVICE_PATTERN | cut -d'=' -f2 | cut -f2 --complement`
+TOUCHPAD_IS_ENABLED=`xinput list-props $TOUCHPAD_DEVICE_ID | grep "Device Enabled" | cut -d':' -f2 | tr -d '[[:space:]]'`
+
+function create_directory_if_nonexisting
+{
+	if [ ! -d $1 ];
+	then
+		mkdir $1
+		chmod +rw $1
+	fi
+}
+
+function init_log_file
+{
+	touch $LOG_FILE
+}
+
+function log
+{
+	echo $1 >> $LOG_FILE
+}
+
+function set_enabled_status
+{
+	xinput --set-prop $TOUCHPAD_DEVICE_ID "Device Enabled" $1
+	log "[INFO  ] Enabled status for device $TOUCHPAD_DEVICE_ID has been set to $1."
+}
+
+function disable_touchpad
+{
+	set_enabled_status 0
+}
+
+function enable_touchpad
+{
+	set_enabled_status 1
+}
+
+function toggle_touchpad
+{
+	if [ $TOUCHPAD_IS_ENABLED -eq 0 ]
+	then
+		enable_touchpad
+	else
+		disable_touchpad
+	fi
+}
+
+function status
+{
+	echo "Touchpad Device ID: "$TOUCHPAD_DEVICE_ID
+	if [ $TOUCHPAD_IS_ENABLED -eq 0 ]
+	then
+		echo "Touchpad Status   : Off"
+	else
+		echo "Touchpad Status   : On"
+	fi
+}
+
+function validate
+{
+	case $TOUCHPAD_DEVICE_ID in
+		''|*[!0-9]*)
+			log "[ERROR] Device ID '$TOUCHPAD_DEVICE_ID' is not a number."
+			exit -1
+			;;
+	esac
+
+	case $TOUCHPAD_IS_ENABLED in
+		''|*[!0-9]*)
+			log "[ERROR] Unable to read status for touchpad device with ID '$TOUCHPAD_DEVICE_ID'."
+			exit -1
+			;;
+	esac
+}
+
+create_directory_if_nonexisting $LOG_DIRECTORY
+init_log_file
+
+validate
+
+if [ -z "$1" ]
+then
+	toggle_touchpad
+else
+
+	case $1 in
+		on)
+			enable_touchpad
+			;;
+		off)
+			disable_touchpad
+			;;
+		status)
+			status
+			;;
+		*)
+			status
+	esac
+fi
