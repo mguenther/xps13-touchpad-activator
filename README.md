@@ -16,9 +16,9 @@ Use `xinput` to get some information on the touchpanel.
 
 This should yield something like this:
 
-	Virtual core pointer                      	id=2	[master pointer  (3)]
-	  ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
-	  ↳ DLL0665:01 06CB:76AD UNKNOWN            	id=14	[slave  pointer  (2)]
+	Virtual core pointer                    id=2   [master pointer  (3)]
+	  ↳ Virtual core XTEST pointer          id=4    [slave  pointer  (2)]
+	  ↳ DLL0665:01 06CB:76AD UNKNOWN        id=14   [slave  pointer  (2)]
 
 
 If there is no mouse connected to the system, these two entries should be the only ones showing under "Virtual core pointer". If you notice something like "PS2 touchpad", then the PS2 operation is still active. To blacklistn the PS2 operation mode, add the line `blacklist psmouse` to `/etc/modprobe.d/blacklist.conf`.
