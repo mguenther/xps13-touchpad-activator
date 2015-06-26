@@ -12,25 +12,19 @@ The DELL XPS13 (2015) touchpad can operate via PS2 or I2C. In my case, both oper
 
 Use `xinput` to get some information on the touchpanel.
 
-	```
 	$ xinput
-	```
 
 This should yield something like this:
 
-	```
 	Virtual core pointer                    	id=2	[master pointer  (3)]
 	  ↳ Virtual core XTEST pointer              	id=4	[slave  pointer  (2)]
 	  ↳ DLL0665:01 06CB:76AD UNKNOWN            	id=14	[slave  pointer  (2)]
 
-	```
 
 If there is no mouse connected to the system, these two entries should be the only ones showing under "Virtual core pointer". If you notice something like "PS2 touchpad", then the PS2 operation is still active. To blacklistn the PS2 operation mode, add the line `blacklist psmouse` to `/etc/modprobe.d/blacklist.conf`.
 
-	```
 	$ echo -e "\nblacklist psmouse" | sudo tee -a /etc/modprobe.d/blacklist.conf
 	$ sudo update-initramfs -u
-	```
 
 Reboot the system and check the status using `xinput` again. It should look like the example above.
 
@@ -44,40 +38,30 @@ The script does not preserve the last enabled status between system reboots.
 
 Calling the script without additional parameters toggles the enabled status.
 
-	```
 	$ touchpad-activator
-	```
 
 ### Disabling the touchpad
 
 Calling the script with the parameter `off` disables the touchpad.
 
-	```
 	$ touchpad-activator off
-	```
 
 ### Enabling the touchpad
 
 Calling the script with the parameter `on` enables the touchpad.
 
-	```
 	$ touchpad-activator on
-	```
 
 ### Showing the current status
 
 Calling the script with the parameter `status` shows the associated device ID and the current enabled status.
 
-	```
 	$ touchpad-activator status
-	```
 
 This yields
 
-	```
 	Touchpad Device ID: 14
 	Touchpad Status   : Off
-	```
 
 ## Logging
 
