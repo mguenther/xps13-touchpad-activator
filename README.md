@@ -16,7 +16,7 @@ Use `xinput` to get some information on the touchpanel.
 
 This should yield something like this:
 
-	Virtual core pointer                    id=2   [master pointer  (3)]
+	Virtual core pointer                    id=2    [master pointer  (3)]
 	  ↳ Virtual core XTEST pointer          id=4    [slave  pointer  (2)]
 	  ↳ DLL0665:01 06CB:76AD UNKNOWN        id=14   [slave  pointer  (2)]
 
