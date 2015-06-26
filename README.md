@@ -1,4 +1,4 @@
-# XPS13 (2015) Touchpad Activator
+# DELL XPS13 (2015) Touchpad Activator
 
 The DELL XPS13 (2015) still has some issues when using Ubuntu 14.04 LTS. Most of the issues can be resolved by installing a Linux kernel of the 4.x-line. However, switching the enabled status of the touchpad is still finicky. Since I use a small mouse most of the time when working with the machine, I'd like to deactivate / activate the touchpad in a convenient way.
 
@@ -71,6 +71,17 @@ Calling the script with the parameter `status` shows the associated device ID an
 	```
 	$ touchpad-activator status
 	```
+
+This yields
+
+	```
+	Touchpad Device ID: 14
+	Touchpad Status   : Off
+	```
+
+## Logging
+
+The script creates the directory `/home/$USER/.touchpad-activator` and logs its activity and errors to the file `/home/$USER/.touchpad-activator/touchpad-activator.log`.
 
 ## License
 
